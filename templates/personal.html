@@ -45,7 +45,7 @@
             </div>
 
             <li class="nav-item">
-                <a class="nav-link" href="/usuario/{{id}}">
+                <a class="nav-link" href="/personal">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Personal</span></a>
             </li>
@@ -243,44 +243,43 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Inicio</h1>
-                    </div>
-
                     <!-- Content Row -->
                     <div class="row">
-                        <h1>Control de personal</h1>
+                        <h1>Personal</h1>
                     </div>
 
                     <!-- Content Row -->
                     <hr>
                     <div class="row">
-                        <div class="col-md-6">
-                            <h4>Tabla de Personal</h4>
-                            <div class="table-tesponsive">
-                                <table class="table">
+                        <div class="table-tesponsive">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <th>Empleado</th>
+                                    <th>Nombre</th>
+                                    <th>Apellidos</th>
+                                    <th>Telefono</th>
+                                    <th>Tipo</th>
+                                    <th>Estatus</th>
+                                    <th>Editar</th>
+                                    <th>Eliminar</th>
+                                </thead>
+                                {%for registro in user%}
                                     <tr>
-                                        <th>Empleado</th>
-                                        <th>Nombre</th>
-                                        <th>Apellidos</th>
-                                        <th>Editar</th>
-                                        <th>Eliminar</th>
+                                        <td>{{registro[0]}}</td>
+                                        <td>{{registro[1]}}</td>
+                                        <td>{{registro[2]}}</td>
+                                        <td>{{registro[5]}}</td>
+                                        <td>{{registro[17]}}</td>
+                                        <td>{{registro[11]}}</td>
+                                        <td><a href="/usuario/{{registro[0]}}"><i class="fas fa-fw fa-pen" style="color: blue;"></i></a></td>
+                                        <td><i class="fas fa-fw fa-trash" style="color:red;"></i></td>
                                     </tr>
-                                    {%for registro in user%}
-                                        <tr>
-                                            <td><a class="btn btn-primary" type="button" href="/usuario/{{registro[0]}}">{{registro[0]}}</a></td>
-                                            <td>{{registro[1]}}</td>
-                                            <td>{{registro[2]}}</td>
-                                            <td><i class="fas fa-fw fa-pen" style="color: blue;"></i></td>
-                                            <td><i class="fas fa-fw fa-trash" style="color:red;"></i></td>
-                                        </tr>
-                                    {%endfor%}
-                                </table>
-                            </div>
+                                {%endfor%}
+                            </table>
                         </div>
-                        <div class="col-md-6">
+                    </div>
+                    <hr>
+                    <div class="row">
                             <h4>Nuevo Usuario</h4>
                             <form action="" method="POST" class="form">
                                 <div class="row">
@@ -375,7 +374,6 @@
                                 </div>
                             </form>
                         </div>
-                    </div>
 
                     <!-- Content Row -->
                     <div class="row">

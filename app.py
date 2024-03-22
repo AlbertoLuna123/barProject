@@ -70,7 +70,7 @@ def developer():
 @app.route("/personal")
 def personal():
     cursor = db.database.cursor()
-    sql = f"SELECT id_user,name_user,last_name_user FROM user"
+    sql = f"SELECT * FROM user a INNER JOIN userType b ON a.id_userType = b.id_userType"
     cursor.execute(sql)
     user = cursor.fetchall()
     return render_template("personal.html",user = user)
@@ -82,7 +82,7 @@ def usuario(id):
     sql = f"SELECT * FROM user a INNER JOIN userType b ON a.id_userType = b.id_userType WHERE a.id_user = {id}"
     cursor.execute(sql)
     user = cursor.fetchone()
-    return render_template("user.html",id=id,user=user)
+    return render_template("user.html",user=user)
 
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD
