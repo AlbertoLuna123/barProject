@@ -5,6 +5,7 @@ import database as db
 app=Flask(__name__)
 app.secret_key = '1234'
 
+#iniciacion de aplicacion
 @app.route('/',methods=['GET','POST'])
 def home():
     if request.method=='POST':
@@ -12,7 +13,7 @@ def home():
         return render_template('index.html')
     return render_template('index.html')
 
-#funcion del login
+#Inicio de sesion
 @app.route('/signin',methods = ["POST","GET"])
 def singin():
     if request.method == "POST" and 'email' in request.form and 'pass1':
@@ -36,6 +37,11 @@ def singin():
         print("Request method GET")
         return render_template('index.html')
     
+#Cierre de sesion
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
     
 #califica el tipo de usuario y dezpliega el homepage
 @app.route('/starting')
