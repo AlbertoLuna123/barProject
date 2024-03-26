@@ -16,26 +16,23 @@ def home():
 #Inicio de sesion
 @app.route('/signin',methods = ["POST","GET"])
 def singin():
-    if request.method == "POST" and 'email' in request.form and 'pass1':
-        _email = request.form['email']
-        _pass1 = request.form['pass1']
-        
-        cursor = db.database.cursor()
-        sql = "SELECT * FROM user WHERE email_user = %s AND password_user = %s"
-        data = (_email,_pass1)
-        cursor.execute(sql,data)
-        account = cursor.fetchone()
-        if account:
-            session['logueado'] = True
-            id = account[0]
-            session['id'] = id
-            session['type'] = account[15]
-            return redirect(url_for("starting"))
-        else:
-            return render_template('index.html')
+    _email = request.form['email']
+    _pass1 = request.form['pass1']
+    
+    cursor = db.database.cursor()
+    sql = "SELECT * FROM user WHERE email_user = %s AND password_user = %s"
+    data = (_email,_pass1)
+    cursor.execute(sql,data)
+    account = cursor.fetchone()
+    if account:
+        session['logueado'] = True
+        id = account[0]
+        session['id'] = id
+        session['type'] = account[15]
+        return redirect(url_for("starting"))
     else:
-        print("Request method GET")
-        return render_template('index.html')
+        msg_error = "Las credenciales ingresadas no son válidas. Por favor, revisa tu nombre de usuario y contraseña e intenta nuevamente."
+        return render_template('index.html',msg = msg_error)
     
 #Cierre de sesion
 @app.route('/logout')
@@ -79,7 +76,8 @@ def personal():
     sql = f"SELECT * FROM user a INNER JOIN userType b ON a.id_userType = b.id_userType"
     cursor.execute(sql)
     user = cursor.fetchall()
-    return render_template("personal.html",user = user)
+    user_sorted = sorted(user, key=lambda x: x[0], reverse=True)
+    return render_template("personal.html",user = user_sorted)
 
 @app.route("/usuario/<int:id>")
 def usuario(id):
@@ -90,6 +88,70 @@ def usuario(id):
     user = cursor.fetchone()
     return render_template("user.html",user=user)
 
+@app.route("/register",methods = ["POST","GET"])
+def register():
+    _nombre = request.form['nombre']
+    _apellidos = request.form['apellidos']
+    _email = request.form['email']
+    _contrasena = request.form['contrasena']
+    _telefono = request.form['telefono']
+    _refper1nom = request.form['refper1nom']
+    _refper1tel = request.form['refper1tel']
+    _refper2nom = request.form['refper2nom']
+    _refper2tel = request.form['refper2tel']
+    _domicilio = request.form['domicilio']
+    _rfc = request.form['rfc']
+    _curp = request.form['curp']
+    _nss = request.form['nss']
+    _tipo = request.form['tipo']
+    
+    cursor = db.database.cursor()
+    sql = f"""
+        INSERT INTO `user`(
+    `name_user`, 
+    `last_name_user`, 
+    `email_user`, 
+    `password_user`, 
+    `phone_user`, 
+    `personal_ref_1_user`, 
+    `phone_personal_ref_1_user`, 
+    `personal_ref_2_user`, 
+    `phone_personal_ref_2_user`, 
+    `address_user`,
+    `status_user`,  
+    `rfc_user`, 
+    `curp_user`, 
+    `nss_user`, 
+    `id_userType`) 
+    VALUES (
+        '{_nombre}',
+        '{_apellidos}',
+        '{_email}',
+        '{_contrasena}',
+        '{_telefono}',
+        '{_refper1nom}',
+        '{_refper1tel}',
+        '{_refper2nom}',
+        '{_refper2tel}',
+        '{_domicilio}',
+        'Activo',
+        '{_rfc}',
+        '{_curp}',
+        '{_nss}',
+        '{_tipo}')
+    """
+    try:
+        cursor.execute(sql)
+        db.database.commit()
+        return redirect(url_for("personal"))
+    
+    except db.database.connector.Error as error:
+        return redirect(url_for("personal"))
+    
+    
+    
+
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD
     app.run(port=5000,debug=True)
+    

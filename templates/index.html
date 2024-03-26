@@ -13,11 +13,14 @@
         <div class="row">
             <div class="card shadow">
                 <div class="card-body">
+                    <!-- FORMULARIO DE LOGIN -->
                     <form action="/signin" method="POST">
                         <div class="row mb-3">
+                            <!-- COLUMNA IZQUIERDA VACIA -->
                             <div class="col-md-4">
                                 
                             </div>
+                            <!-- COLUMNA MEDIA CON FORMULARIO -->
                             <div class="col-md-4">
                                 <div class="row">
                                     <div class="col">
@@ -39,9 +42,18 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- COLUMNA DERECHA VACIA -->
                             <div class="col-md-4">
                                 
                             </div>
+                        </div>
+                        <!-- MENSAJE DE ERROR -->
+                        <div class="row">
+                            {% if msg %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ msg }}
+                                </div>
+                            {% endif %}
                         </div>
                     </form>
                 </div>
