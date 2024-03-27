@@ -72,6 +72,11 @@ def compras():
 def developer():
     return render_template('developer.html') 
 
+@app.route('/gestionInventario')
+def gestionInventario():
+    return render_template('gestionInventario.html')
+
+
 #lanza el panel del personal para ver la tabla de ususarios y crear nuevos
 @app.route("/personal")
 def personal():
@@ -210,7 +215,6 @@ def delete(id):
         flash(f"Error> {delete}", "danger")
         
     return redirect(url_for("personal"))
-        
 
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD
