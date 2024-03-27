@@ -1,6 +1,8 @@
 from flask import Flask,redirect,url_for,render_template,request,session
 import os
 import database as db
+from flask import flash
+
 
 app=Flask(__name__)
 app.secret_key = '1234'
@@ -70,6 +72,7 @@ def compras():
 def developer():
     return render_template('developer.html') 
 
+#lanza el panel del personal para ver la tabla de ususarios y crear nuevos
 @app.route("/personal")
 def personal():
     cursor = db.database.cursor()
@@ -79,6 +82,7 @@ def personal():
     user_sorted = sorted(user, key=lambda x: x[0], reverse=True)
     return render_template("personal.html",user = user_sorted)
 
+#muestra toda la informacion del usuario seleccionado en un formulario para realizar su edicion
 @app.route("/usuario/<int:id>")
 def usuario(id):
     id=id
@@ -88,6 +92,53 @@ def usuario(id):
     user = cursor.fetchone()
     return render_template("user.html",user=user)
 
+#realiza la funcion update y retorna la ruta de personal
+@app.route('/edit_user/<int:id>',methods = ["POST","GET"])
+def method_name(id):
+    id = id
+    _nombre = request.form['nombre']
+    _apellidos = request.form['apellidos']
+    _email = request.form['email']
+    _status = request.form['status']
+    _telefono = request.form['telefono']
+    _refper1nom = request.form['refper1nom']
+    _refper1tel = request.form['refper1tel']
+    _refper2nom = request.form['refper2nom']
+    _refper2tel = request.form['refper2tel']
+    _domicilio = request.form['domicilio']
+    _rfc = request.form['rfc']
+    _curp = request.form['curp']
+    _nss = request.form['nss']
+    _tipo = request.form['tipo']
+    
+    cursor = db.database.cursor()
+    sql = f"""
+        UPDATE `user` 
+        SET 
+        `name_user`='{_nombre}',
+        `last_name_user`='{_apellidos}',
+        `email_user`='{_email}',
+        `phone_user`='{_telefono}',
+        `personal_ref_1_user`='{_refper1nom}',
+        `phone_personal_ref_1_user`='{_refper1tel}',
+        `personal_ref_2_user`='{_refper2nom}',
+        `phone_personal_ref_2_user`='{_refper2tel}',
+        `address_user`='{_domicilio}',
+        `status_user`='{_status}',
+        `rfc_user`='{_rfc}',
+        `curp_user`='{_curp}',
+        `nss_user`='{_nss}',
+        `id_userType`='{_tipo}' 
+        WHERE id_user = {id}
+    """
+    try:
+        cursor.execute(sql)
+        db.database.commit()
+        return redirect(url_for("personal"))
+    except db.database.MySQLError as error:
+        return redirect(url_for("Personal"))
+        
+#registra usuarios nuevos en la base de datos, obtiene los datos del formulario de "PERSONAL"
 @app.route("/register",methods = ["POST","GET"])
 def register():
     _nombre = request.form['nombre']
@@ -145,11 +196,21 @@ def register():
         db.database.commit()
         return redirect(url_for("personal"))
     
-    except db.database.connector.Error as error:
+    except db.database.errors.Error as error:
         return redirect(url_for("personal"))
     
-    
-    
+@app.route("/delete/<int:id>")
+def delete(id):
+    id = id
+    delete = db.delete(id) 
+    print(delete)
+    if delete == "Registro eliminado":
+        flash("Registro eliminado con exito", "success")
+    else:
+        flash(f"Error> {delete}", "danger")
+        
+    return redirect(url_for("personal"))
+        
 
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD
