@@ -263,24 +263,25 @@
                             <table class="table table-hover">
                                 <thead class="thead-dark">
                                     <th>Empleado</th>
+                                    <th>Editar</th>
+                                    <th>Eliminar</th>
                                     <th>Nombre</th>
                                     <th>Apellidos</th>
                                     <th>Telefono</th>
                                     <th>Tipo</th>
                                     <th>Estatus</th>
-                                    <th>Editar</th>
-                                    <th>Eliminar</th>
+                                    
                                 </thead>
                                 {%for registro in user%}
                                     <tr>
                                         <td>{{registro[0]}}</td>
+                                        <td><a href="/usuario/{{registro[0]}}"><i class="fas fa-fw fa-pen" style="color: blue;"></i></a></td>
+                                        <td><a href="/delete/{{registro[0]}}"><i class="fas fa-fw fa-trash" style="color:red;"></i></a></td>
                                         <td>{{registro[1]}}</td>
                                         <td>{{registro[2]}}</td>
                                         <td>{{registro[5]}}</td>
                                         <td>{{registro[17]}}</td>
                                         <td>{{registro[11]}}</td>
-                                        <td><a href="/usuario/{{registro[0]}}"><i class="fas fa-fw fa-pen" style="color: blue;"></i></a></td>
-                                        <td><a href="/delete/{{registro[0]}}"><i class="fas fa-fw fa-trash" style="color:red;"></i></a></td>
                                     </tr>
                                 {%endfor%}
                             </table>
