@@ -72,20 +72,38 @@ def compras():
 def developer():
     return render_template('developer.html') 
 
+#lanza el panel de gestion de inventario
 @app.route('/gestionInventario')
 def gestionInventario():
-    return render_template('gestionInventario.html')
-
+    cursor = db.database.cursor()
+    sql_item = f"SELECT * FROM item a INNER JOIN unidad_item b ON a.id_unidad_item = b.id_unidad_item INNER JOIN categoria_item c ON a.id_categoria_item = c.id_categoria_item INNER JOIN proveedor d ON a.id_proveedor = d.id_proveedor"
+    cursor.execute(sql_item)
+    user_sorted = sorted(cursor.fetchall(), key=lambda x: x[0], reverse=True)
+    
+    sql_category = f"SELECT * FROM categoria_item ORDER BY nombre_categoria_item ASC"
+    cursor.execute(sql_category)
+    category = cursor.fetchall()
+    
+    sql_unidad = f"SELECT * FROM unidad_item ORDER BY nombre_unidades_item ASC"
+    cursor.execute(sql_unidad)
+    unidad = cursor.fetchall()
+    
+    sql_proveedor = f"SELECT id_proveedor, name_proveedor FROM proveedor ORDER BY name_proveedor ASC"
+    cursor.execute(sql_proveedor)
+    proveedor = cursor.fetchall()
+    
+    return render_template("gestionInventario.html",user = user_sorted, categoria = category, unidad = unidad, proveedor = proveedor)
 
 #lanza el panel del personal para ver la tabla de ususarios y crear nuevos
 @app.route("/personal")
 def personal():
     cursor = db.database.cursor()
-    sql = f"SELECT * FROM user a INNER JOIN userType b ON a.id_userType = b.id_userType"
+    sql= f"SELECT * FROM user a INNER JOIN userType b ON a.id_userType = b.id_userType"
     cursor.execute(sql)
     user = cursor.fetchall()
     user_sorted = sorted(user, key=lambda x: x[0], reverse=True)
     return render_template("personal.html",user = user_sorted)
+
 
 #muestra toda la informacion del usuario seleccionado en un formulario para realizar su edicion
 @app.route("/usuario/<int:id>")

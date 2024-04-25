@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Personal - System Bar</title>
+    <title>Inventario - System Bar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   
     <!-- Custom fonts for this template-->
@@ -50,14 +50,39 @@
                     <span>Personal</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/inventario">
+                <a class="nav-link" href="/gestionInventario">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Gestion de Inventario</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/gastos">
+                <a class="nav-link" href="/controlGastos">
                     <i class="fas fa-fw fa-dollar-sign"></i>
                     <span>Control de Gastos</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/analisisVentas">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Analisis de Ventas</span></a>
+            </li>
+
+            <div class="sidebar-heading">
+                Compras
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/gestionCompras">
+                    <i class="fas fa-fw fa-list"></i>
+                    <span>Geation de Compras</span></a>
+            </li>
+
+            <div class="sidebar-heading">
+                Meseros
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/puntoVenta">
+                    <i class="fas fa-fw fa-bell"></i>
+                    <span>Punto de Venta</span></a>
             </li>
             <!-- 
             <li class="nav-item">
@@ -224,7 +249,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Salir</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Logout</span>
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -243,9 +268,82 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+
                     <!-- Content Row -->
                     <div class="row">
-                        <h1>Gestion de inventario</h1>
+                        <h1>Inventario</h1>
+                    </div>
+
+                    <!-- Content Row -->
+                    <div class="row">
+                        <div class=" col-4 input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Buscar Item" aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Añadir Item</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-striped table-hover table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>Nombre</th>
+                                    <th>Descripcion</th>
+                                    <th>Existencia</th>
+                                    <th>Medida</th>
+                                    <th>Precio</th>
+                                    <th>Entrada</th>
+                                    <th>Proveedor</th>
+                                    <th>Categoria</th>
+                                    <th>Minimo</th>
+                                    <th>Editar</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                                {%for registro in user%}
+                                <tr>
+                                    <td>{{registro[0]}}</td>
+                                    <td>{{registro[1]}}</td>
+                                    <td>{{registro[2]}}</td>
+                                    <td>{{registro[3]}}</td>
+                                    <td>{{registro[12]}}</td>
+                                    <td>${{registro[5]}}</td>
+                                    <td>{{registro[6]}}</td>
+                                    <td>{{registro[16]}}</td>
+                                    <td>{{registro[14]}}</td>
+                                    <td>{{registro[9]}}</td>
+                                    <td>
+                                        <a href="/item/{{registro[0]}}">
+                                            <i class="fas fa-fw fa-pen" style="color: blue;"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/deleteItem/{{registro[0]}}">
+                                            <i class="fas fa-fw fa-trash" style="color:red;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {%endfor%}
+                        </table>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                              <li class="page-item disabled">
+                                <a class="page-link">Previous</a>
+                              </li>
+                              <li class="page-item"><a class="page-link" href="#">1</a></li>
+                              <li class="page-item"><a class="page-link" href="#">2</a></li>
+                              <li class="page-item"><a class="page-link" href="#">3</a></li>
+                              <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                              </li>
+                            </ul>
+                          </nav>
+                    </div>
+
+                    <!-- Content Row -->
+                    <div class="row">
                     </div>
 
                 </div>
@@ -254,6 +352,83 @@
             </div>
             <!-- End of Main Content -->
 
+            <!-- Formulario en modal | nuevo item -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Nuevo Item</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form" action="/newItem" method="POST">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Nombre del Item: <input type="text" name="nombreitem" class="form-control">
+                                            </div>
+                                            <div class="col-md-6">
+                                                Existencia en Inventario: <input type="text" name="existencia" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Nombre del Item: 
+                                                <select name="unidad" class="form-control">
+                                                    {%for registro in unidad%}
+                                                        <option value="{{registro[0]}}" class="form-control">{{registro[1]}}</option>
+                                                    {%endfor%}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Categoria: 
+                                                <select name="unidad" class="form-control">
+                                                    {%for registro in categoria%}
+                                                        <option value="{{registro[0]}}" class="form-control">{{registro[1]}}</option>
+                                                    {%endfor%}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Precio Promedio: 
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="text" name="precio" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Nivel minimo de existencia: <input type="text" name="existencia" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Proveedor: 
+                                                <select name="unidad" class="form-control">
+                                                    {%for registro in proveedor%}
+                                                        <option value="{{registro[0]}}" class="form-control">{{registro[1]}}</option>
+                                                    {%endfor%}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Nota: <input type="text" name="nota" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <textarea name="desc" id="" cols="30" rows="10" placeholder="Descripcion" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -290,24 +465,6 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-primary" href="/logout">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- USER MODAL -->
-    <div class="modal fade" id="modalUser" tabindex="-1" aria-labelbdy="modalUser" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalUser">Informacion de usuario</h1>
-                    <button type="button" class="btn-close"></button>
-                </div>
-                <div class="modal-body">
-                    Nombre: 
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
                 </div>
             </div>
         </div>
