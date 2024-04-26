@@ -8,15 +8,22 @@ database = mysql.connector.connect(
     database = 'bd_Bar'
 )
 
-def delete(id):
-    id = id
-    id = id
-    sql = f"DELETE FROM `user` WHERE id_user = {id}"
+def delete(id, table, conditionField):
+    sql = f"DELETE FROM {table} WHERE {conditionField} = {id}"
     cursor = database.cursor()
     try:
         cursor.execute(sql)
         database.commit()
         return "Registro eliminado"
+    except MySQLError as error:
+        return f"Error: {error}"
+    
+def executeSQL(sql):
+    cursor = database.cursor()
+    try:
+        cursor.execute(sql)
+        database.commit()
+        return "Completo"
     except MySQLError as error:
         return f"Error: {error}"
 

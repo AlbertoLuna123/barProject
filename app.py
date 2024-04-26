@@ -2,6 +2,8 @@ from flask import Flask,redirect,url_for,render_template,request,session
 import os
 import database as db
 from flask import flash
+from datetime import date
+from datetime import datetime
 
 
 app=Flask(__name__)
@@ -14,6 +16,10 @@ def home():
         # Handle POST Request here
         return render_template('index.html')
     return render_template('index.html')
+
+#-----------------------------------------------------------------------------------------------------------------------
+# LOGIN Y LOGOUT
+#-----------------------------------------------------------------------------------------------------------------------
 
 #Inicio de sesion
 @app.route('/signin',methods = ["POST","GET"])
@@ -56,7 +62,12 @@ def starting():
                 return redirect(url_for("developer"))
             else: 
                 return redirect(url_for("home"))
-            
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# DASHBOARDS PRINCIPALES
+#-----------------------------------------------------------------------------------------------------------------------
+   
 #lanzar el dashboard para administrador
 @app.route("/administrador")
 def administrador():
@@ -71,6 +82,11 @@ def compras():
 @app.route("/developer")
 def developer():
     return render_template('developer.html') 
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# MODULOS ESPECIFICOS
+#-----------------------------------------------------------------------------------------------------------------------
 
 #lanza el panel de gestion de inventario
 @app.route('/gestionInventario')
@@ -94,6 +110,29 @@ def gestionInventario():
     
     return render_template("gestionInventario.html",user = user_sorted, categoria = category, unidad = unidad, proveedor = proveedor)
 
+#ruta para crear un nuevo item
+@app.route('/newItem', methods = ["POST","GET"])
+def newItem():
+    __nombre = request.form['nombreitem']
+    __existencia = request.form['existencia']
+    __unidad = request.form['unidad']
+    __categoria = request.form['categoria']
+    __precio = request.form['precio']
+    __min = request.form['min']
+    __preoveedor = request.form['proveedor']
+    __nota = request.form['nota']
+    __desc = request.form['desc']
+    today = datetime.today()
+    
+    sql = f"INSERT INTO `item`(`nombre_item`, `desc_item`, `existencia_item`, `id_unidad_item`, `precio_unitario_item`, `ultimo_update_item`, `id_proveedor`, `id_categoria_item`, `nivel_minimo_item`, `notas_item`) VALUES ('{__nombre}','{__desc}','{__existencia}','{__unidad}','{__precio}','{today}','{__preoveedor}','{__categoria}','{__min}','{__nota}')"
+    execute = db.executeSQL(sql)
+    if execute == "Completo":
+        flash("Item registrado de manera correcta", "success")
+    else:
+        flash(f"Error: {execute}", "danger")
+        
+    return redirect(url_for("gestionInventario"))
+
 #lanza el panel del personal para ver la tabla de ususarios y crear nuevos
 @app.route("/personal")
 def personal():
@@ -104,11 +143,9 @@ def personal():
     user_sorted = sorted(user, key=lambda x: x[0], reverse=True)
     return render_template("personal.html",user = user_sorted)
 
-
 #muestra toda la informacion del usuario seleccionado en un formulario para realizar su edicion
 @app.route("/usuario/<int:id>")
 def usuario(id):
-    id=id
     cursor = db.database.cursor()
     sql = f"SELECT * FROM user a INNER JOIN userType b ON a.id_userType = b.id_userType WHERE a.id_user = {id}"
     cursor.execute(sql)
@@ -117,8 +154,7 @@ def usuario(id):
 
 #realiza la funcion update y retorna la ruta de personal
 @app.route('/edit_user/<int:id>',methods = ["POST","GET"])
-def method_name(id):
-    id = id
+def edit_user(id):
     _nombre = request.form['nombre']
     _apellidos = request.form['apellidos']
     _email = request.form['email']
@@ -154,12 +190,12 @@ def method_name(id):
         `id_userType`='{_tipo}' 
         WHERE id_user = {id}
     """
-    try:
-        cursor.execute(sql)
-        db.database.commit()
-        return redirect(url_for("personal"))
-    except db.database.MySQLError as error:
-        return redirect(url_for("Personal"))
+    execute = db.executeSQL(sql)
+    if execute == "Completo":
+        flash("Usuario actualizado de manera correcta", "success")
+    else:
+        flash(f"Error: {execute}", "danger")
+    return redirect(url_for("personal"))
         
 #registra usuarios nuevos en la base de datos, obtiene los datos del formulario de "PERSONAL"
 @app.route("/register",methods = ["POST","GET"])
@@ -179,7 +215,6 @@ def register():
     _nss = request.form['nss']
     _tipo = request.form['tipo']
     
-    cursor = db.database.cursor()
     sql = f"""
         INSERT INTO `user`(
     `name_user`, 
@@ -214,18 +249,33 @@ def register():
         '{_nss}',
         '{_tipo}')
     """
-    try:
-        cursor.execute(sql)
-        db.database.commit()
-        return redirect(url_for("personal"))
-    
-    except db.database.errors.Error as error:
-        return redirect(url_for("personal"))
-    
+    execute = db.executeSQL(sql)
+    if execute == "Completo":
+        flash("Usuario creado de manera correcta", "success")
+    else:
+        flash(f"Error: {execute}", "danger")
+    return redirect(url_for("personal"))
+
+#-----------------------------------------------------------------------------------------------------------------------
+#RUTAS PARA ELIMINAR REGISTROS DE LAS TABLAS
+#-----------------------------------------------------------------------------------------------------------------------
+
+@app.route('/deleteItem/<int:id>')
+def deleteItem(id):
+    delete = db.delete(id,"item","id_item") 
+    print(delete)
+    if delete == "Registro eliminado":
+        flash("Registro eliminado con exito", "success")
+    else:
+        flash(f"Error> {delete}", "danger")
+        
+    return redirect(url_for("gestionInventario"))
+
+
 @app.route("/delete/<int:id>")
 def delete(id):
     id = id
-    delete = db.delete(id) 
+    delete = db.delete(id,"user","id_user") 
     print(delete)
     if delete == "Registro eliminado":
         flash("Registro eliminado con exito", "success")
