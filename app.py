@@ -56,7 +56,7 @@ def starting():
         return redirect(url_for("administrador"))
     else:
         if user_type == 2:
-            return redirect(url_for("compras"))
+            return redirect(url_for("gestionCompras"))
         else:
             if user_type == 4:
                 return redirect(url_for("developer"))
@@ -67,15 +67,14 @@ def starting():
 #-----------------------------------------------------------------------------------------------------------------------
 # DASHBOARDS PRINCIPALES
 #-----------------------------------------------------------------------------------------------------------------------
-   
 #lanzar el dashboard para administrador
 @app.route("/administrador")
 def administrador():
     return render_template('administrador.html')
 
 #lanzar el dashboard para compras
-@app.route("/compras")
-def compras():
+@app.route("/gestionCompras")
+def gestionCompras():
     return render_template('compras.html')
         
 #lanzar el dashboard para developer  
@@ -83,7 +82,28 @@ def compras():
 def developer():
     return render_template('developer.html') 
 
+#-----------------------------------------------------------------------------------------------------------------------
+# RUTAS DE COMPRAS
+#-----------------------------------------------------------------------------------------------------------------------
 
+# ORDENES DE COMPRA ABIERTAS
+@app.route('/ordenesAbiertas')
+def ordenesAbiertas():
+    sql = "SELECT a.id_compra Numero, a.fecha_compra Fecha, a.subtotal_compra Subtotal, a.iva_compra IVA, a.total_compra Total, b.name_user Usuario, c.name_proveedor Proveedor, a.status_compra FROM compra a INNER JOIN user b INNER JOIN proveedor c ON a.id_usuario = b.id_user and a.id_proveedor = c.id_proveedor"
+    execute = db.select(sql)
+    return render_template('ordenesAbiertas.html', data = execute)
+
+#VIZUALIZAR ORDEN DE COMPRA COMPLETA
+@app.route('/detalleCompra/<int:id>')
+def compra(id):
+    sqlCompra = f"SELECT * FROM compra a INNER JOIN user b INNER JOIN proveedor c ON a.id_usuario = b.id_user and a.id_proveedor = c.id_proveedor WHERE a.id_compra = {id}"
+    sqlCompraDetalle = f"SELECT *, a.cantidad_desc_compra * a.valor_unit_desc_compra Total FROM desc_compra a INNER JOIN item b ON a.id_ttem = b.id_item INNER JOIN unidad_item c ON b.id_unidad_item = c.id_unidad_item WHERE a.id_compra = {id}"
+    sqlBar =    f"select a.*, b.name_user, b.last_name_user, b.phone_user, b.email_user  from bar_information a INNER JOIN user b on a.id_user = b.id_user;"
+    
+    dataBar = db.select(sqlBar)
+    dataCompra = db.select(sqlCompra)
+    dataDetalleCompra = db.select(sqlCompraDetalle)
+    return render_template('detalleCompra.html', dataCompra = dataCompra, dataDetalleCompra = dataDetalleCompra, dataBar = dataBar)
 #-----------------------------------------------------------------------------------------------------------------------
 # MODULOS ESPECIFICOS
 #-----------------------------------------------------------------------------------------------------------------------
@@ -284,6 +304,7 @@ def delete(id):
         
     return redirect(url_for("personal"))
 
+#INICIALIZA LA APLICACION | DEBUG = TRUE PARA TEST, CAMBIAR PARA PRODUCCION
 if __name__ == '__main__':
     #DEBUG is SET to TRUE. CHANGE FOR PROD
     app.run(port=5000,debug=True)

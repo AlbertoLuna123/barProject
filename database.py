@@ -18,6 +18,15 @@ def delete(id, table, conditionField):
     except MySQLError as error:
         return f"Error: {error}"
     
+def select(sql):
+    cursor = database.cursor()
+    try:
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        return data
+    except MySQLError as error:
+        return f"Error: {error}"
+    
 def executeSQL(sql):
     cursor = database.cursor()
     try:
