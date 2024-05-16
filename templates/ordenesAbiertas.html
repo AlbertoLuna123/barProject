@@ -256,44 +256,29 @@
                     </div>
 
                     <!-- Content Row -->
-
                     <div class="row">
-                        <table class="table table-sm table-striped table-hover table-responsive" id="miTabla">
-                            <thead>
-                                <tr>
-                                    <th>Numero de orden</th>
-                                    <th>Fecha</th>
-                                    <th>Subtotal</th>
-                                    <th>IVA</th>
-                                    <th>Total</th>
-                                    <th>Usuario</th>
-                                    <th>Proveedor</th>
-                                    <th>Estatus</th>
-                                    <th>Ver orden</th>
-                                </tr>
-                            </thead>
-                                {%for registro in data%}
-                                <tr>
-                                    <td>{{registro[0]}}</td>
-                                    <td>{{registro[1]}}</td>
-                                    <td>${{registro[2]}}</td>
-                                    <td>${{registro[3]}}</td>
-                                    <td>${{registro[4]}}</td>
-                                    <td>{{registro[5]}}</td>
-                                    <td>{{registro[6]}}</td>
-                                    {% if registro[7] %}
-                                    <td style="color: Green;">Abierta</td>
-                                    {% else %}
-                                    <td style="color: red;">Cerrada</td>
-                                    {% endif %}
-                                    <td><a href="/detalleCompra/{{registro[0]}}"><button class="btn btn-secondary">Abrir</button></a></td>
-                                </tr>
-                                {%endfor%}
-                        </table>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
+                        <div class="list-group">
+                            {% for registro in data %}
+                            <a href="/detalleCompra/{{registro[0]}}" class="list-group-item list-group-item-action" aria-current="true">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Numero de orden {{registro[0]}}</h5>
+                                <small>3 days ago</small>
+                                </div>
+                                <p class="mb-1">Fecha de la orden: {{registro[1]}}</p>
+                                <p class="mb-1">Proveedor: {{registro[6]}}</p>
+                                <p class="mb-1">Usuario: {{registro[5]}}</p>
+                                <p class="mb-1">Subtotal: {{registro[2]}}</p>
+                                <p class="mb-1">IVA: {{registro[3]}}</p>
+                                <p class="mb-1">Total: {{registro[4]}}</p>
+                                {% if registro[7] %}
+                                    <small style="color:green;">Orden abierta.</small>
+                                {% else %}
+                                    <small style="color:red;">Orden Cerrada.</small>
+                                {% endif %}
+                                
+                            </a>
+                            {% endfor %}
+                        </div>
                     </div>
 
                 </div>

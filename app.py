@@ -93,6 +93,56 @@ def ordenesAbiertas():
     execute = db.select(sql)
     return render_template('ordenesAbiertas.html', data = execute)
 
+@app.route('/crearOrden')
+def crearOrden():
+    sql = "SELECT * FROM proveedor"
+    data = db.select(sql)
+    return render_template('crearOrden.html',data=data)
+
+@app.route('/ordenNueva',methods = ["POST","GET"])
+def ordenNueva():
+    __idProveedor = request.form['id']
+    fecha = datetime.today().strftime('%Y-%m-%d')  # Formatea la fecha como 'YYYY-MM-DD'
+    SQLCreaCompra = f"INSERT INTO `compra`(`id_usuario`, `fecha_compra`, `id_proveedor`,`status_compra`) VALUES ({session['id']}, '{fecha}', {__idProveedor}, 1)"
+    db.executeSQL(SQLCreaCompra)
+    return redirect(url_for("itemOrder",id_proveedor = __idProveedor))
+
+@app.route('/itemOrden')
+def itemOrder():
+    __idProveedor = request.args.get('id_proveedor')
+    SQLItems = f"SELECT * FROM item WHERE id_proveedor = {__idProveedor} AND id_item NOT IN (SELECT id_ttem FROM desc_compra WHERE id_compra = (SELECT MAX(id_compra) FROM compra))"
+    sqlCompra = "SELECT MAX(id_compra) FROM compra"
+    data = db.select(SQLItems)
+    id_compra = db.select(sqlCompra)
+    return(render_template('seleccionaItem.html',data = data,id_compra=id_compra)) 
+
+@app.route('/anadirItems',methods = ['GET','POST'])
+def anadirItems():
+    __id_compra = request.form['id_compra']
+    __ids = request.form.getlist('id')
+    __cantidades = request.form.getlist('cantidad[]')
+    __preciosUnit = request.form.getlist('precioUnitario[]')
+    print(__id_compra)
+    print(__ids)
+    print(__cantidades)
+    print(__preciosUnit)
+    for i in range(len(__ids)):
+        query = f"INSERT INTO `desc_compra`(`id_compra`, `id_ttem`, `cantidad_desc_compra`, `valor_unit_desc_compra`) VALUES ('{__id_compra}','{__ids[i]}','{__cantidades[i]}','{__preciosUnit[i]}')"
+        db.executeSQL(query)
+    
+    subtotalList = [int(item) for item in __preciosUnit]
+    cantList = [int(item) for item in __cantidades]
+    subtotalIndiv = [a * b for a, b in zip(subtotalList, cantList)]
+    subtotal = sum(subtotalIndiv)
+    iva = subtotal * 0.16
+    total = subtotal + iva
+    update = f"UPDATE `compra` SET `subtotal_compra`='{subtotal}',`iva_compra`='{iva}',`total_compra`='{total}' WHERE id_compra = {__id_compra}"
+    db.executeSQL(update)
+    
+    return redirect(url_for("ordenesAbiertas"))
+    
+    #insertar item en desc_compra
+
 #VIZUALIZAR ORDEN DE COMPRA COMPLETA
 @app.route('/detalleCompra/<int:id>')
 def compra(id):

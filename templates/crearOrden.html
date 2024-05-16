@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Personal - System Bar</title>
+    <title>Nueva orden - System Bar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   
     <!-- Custom fonts for this template-->
@@ -39,21 +39,9 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
             <div class="sidebar-heading">
-                Aministracion
+                Compras
             </div>
-
-            <li class="nav-item">
-                <a class="nav-link" href="/personal">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Personal</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/gestionInventario">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Gestion de Inventario</span></a>
-            </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
@@ -72,28 +60,11 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/gestionCompras">
-                    <i class="fas fa-fw fa-list"></i>
-                    <span>Gestion de Compras</span></a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="/controlGastos">
                     <i class="fas fa-fw fa-dollar-sign"></i>
                     <span>Control de Gastos</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/analisisVentas">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Analisis de Ventas</span></a>
-            </li>
-            <div class="sidebar-heading">
-                Meseros
-            </div>
-            <li class="nav-item">
-                <a class="nav-link" href="/puntoVenta">
-                    <i class="fas fa-fw fa-bell"></i>
-                    <span>Punto de Venta</span></a>
-            </li>
+            
             <!-- 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
@@ -179,7 +150,8 @@
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
-        </ul>        <!-- End of Sidebar -->
+        </ul>
+        <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -258,7 +230,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Salir</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Logout</span>
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -277,145 +249,29 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    <!-- Content Row -->
-                    <div class="row">
-                        <h1>Personal</h1>
-                    </div>
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">
-                                {{ message }}
-                            </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                    <!-- Content Row -->
-                    <hr>
-                    <div class="row">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Empleado</th>
-                                    <th>Nombre</th>
-                                    <th>Apellidos</th>
-                                    <th>Telefono</th>
-                                    <th>Tipo</th>
-                                    <th>Estatus</th>
-                                    <th>Editar</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            {%for registro in user%}
-                                <tr>
-                                    <td>{{registro[0]}}</td>
-                                    <td>{{registro[1]}}</td>
-                                    <td>{{registro[2]}}</td>
-                                    <td>{{registro[5]}}</td>
-                                    <td>{{registro[17]}}</td>
-                                    <td>{{registro[11]}}</td>
-                                    <td><a href="/usuario/{{registro[0]}}"><i class="fas fa-fw fa-pen" style="color: blue;"></i></a></td>
-                                    <td><a href="/delete/{{registro[0]}}"><i class="fas fa-fw fa-trash" style="color:red;"></i></a></td>
-                                </tr>
-                            {%endfor%}
-                        </table>
-                    </div>
-                    <hr>
-                    <div class="row">
-                            <h4>Nuevo Usuario</h4>
-                            <form action="/register" method="POST" class="form">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="nombre" class="form-label">Nombre de Usuario</label>
-                                        <input type="text" class="form-control" name="nombre">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="apellidos" class="form-label">Apellidos</label>
-                                        <input type="text" class="form-control" name="apellidos">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="text" class="form-control" name="email">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="contraseña" class="form-label">Contraseña</label>
-                                        <input type="password" class="form-control" name="contrasena">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="telefono" class="form-label">Telefono</label>
-                                        <input type="text" class="form-control" name="telefono">
-                                    </div>
-                                    <div class="col-md-6">
 
-                                    </div>
-                                </div>
-                                <hr>
-                                <h4>Referencias Personales</h4>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="refper1nom" class="form-label">Nombre de un conocido</label>
-                                        <input type="text" class="form-control" name="refper1nom">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="refper1tel" class="form-label">Telefono de un conocido</label>
-                                        <input type="text" class="form-control" name="refper1tel">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="refper2nom" class="form-label">Nombre de un conocido</label>
-                                        <input type="text" class="form-control" name="refper2nom">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="refper2tel" class="form-label">Telefono de un conocido</label>
-                                        <input type="text" class="form-control" name="refper2tel">
-                                    </div>
-                                </div>
-                                <hr>
-                                <h3>Información Adicional</h3>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="domicilio" class="form-label">Domicilio</label>
-                                        <input type="text" class="form-control" name="domicilio">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="rfc" class="form-label">RFC</label>
-                                        <input type="text" class="form-control" name="rfc">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="curp" class="form-label">CURP</label>
-                                        <input type="text" class="form-control" name="curp">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="nss" class="form-label">Numero de Seguro Social</label>
-                                        <input type="text" class="form-control" name="nss">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="tipo" class="form-label">Tipo de usuario</label>
-                                        <select name="tipo" id="" class="form-control"> 
-                                            <option value="1">Administrador</option>
-                                            <option value="2">Compras</option>
-                                            <option value="3">Mesero</option>
-                                            <option value="4">Developer</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <input type="submit" class="btn btn-success" value="Registrar">
-                                </div>
-                            </form>
-                        </div>
+                    <!-- Content Row -->
+                    <div class="row">
+                        <h1>Crear orden de compra</h1>
+                    </div>
+
+                    <!-- Content Row -->
+
+                    <div class="row">
+                        <form action="/ordenNueva" method="POST" class="row g-6">
+                            <div class="col-auto">
+                                <select class="form-control" name="id" id="">
+                                    <option value="">Selecciona un proveedor</option>
+                                    {% for proveedor in data %}
+                                    <option value="{{proveedor[0]}}">{{proveedor[1]}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <input type="submit" class="btn btn-primary" value="Crear orden de compra">
+                            </div>
+                        </form>
+                    </div>
 
                     <!-- Content Row -->
                     <div class="row">
@@ -463,24 +319,6 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-primary" href="/logout">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- USER MODAL -->
-    <div class="modal fade" id="modalUser" tabindex="-1" aria-labelbdy="modalUser" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalUser">Informacion de usuario</h1>
-                    <button type="button" class="btn-close"></button>
-                </div>
-                <div class="modal-body">
-                    Nombre: 
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
                 </div>
             </div>
         </div>
