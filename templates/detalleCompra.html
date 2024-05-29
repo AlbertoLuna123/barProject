@@ -54,8 +54,6 @@
                         <h6 class="collapse-header">Opciones:</h6>
                         <a class="collapse-item" href="/ordenesAbiertas">Compras abiertas.</a>
                         <a class="collapse-item" href="/crearOrden">Nueva orden de compra.</a>
-                        <a class="collapse-item" href="/entrada">Registrar entrada.</a>
-                        <a class="collapse-item" href="/administrarProveedores">Administrar proveedores.</a>
                     </div>
                 </div>
             </li>
@@ -286,26 +284,29 @@
                             <table class="table table-striped table-hover table-responsive" style="text-align: center;" id="miTabla">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
                                         <th>Numero de Item</th>
                                         <th>Nombre</th>
                                         <th>Cantidad</th>
                                         <th>Unidad de medida</th>
-                                        <th>Tiempo de entrega</th>
                                         <th>Precio Unitario</th>
                                         <th>Total</th>
+                                        <th>Entrada</th>
                                     </tr>
                                 </thead>
                                     {%for registro in dataDetalleCompra%}
                                     <tr>
-                                        <td></td>
-                                        <td>{{registro[2]}}</td>
+                                        <td>{{registro[1]}}</td>
                                         <td>{{registro[6]}}</td>
                                         <td>{{registro[3]}}</td>
                                         <td>{{registro[17]}}</td>
-                                        <td>{{registro[6]}}</td>
-                                        <td>${{registro[4]}}</td>
-                                        <td>${{registro[17]}}</td>
+                                        <td>${{registro[5]}}</td>
+                                        <td>${{registro[18]}}</td>
+                                        {% if registro[4] %}
+                                        <td style="color: green;">Entregado</td>
+                                        {% else %}
+                                        <th style="color: red;">No entregado</th>
+                                        {% endif %}
+                                        
                                     </tr>
                                     {%endfor%}
                             </table>
@@ -320,6 +321,9 @@
                             <h4>IVA: ${{dataCompra[0][5]}}</h4>
                             <h4>TOTAL: ${{dataCompra[0][6]}}</h4>
                         </div>
+                    </div>
+                    <div class="row">
+                        <a href="/entrada/{{dataCompra[0][0]}}" type="button" class="btn btn-primary">Registrar entrada</a>
                     </div>
 
                 </div>

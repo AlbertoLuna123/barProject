@@ -60,8 +60,6 @@
                         <h6 class="collapse-header">Opciones:</h6>
                         <a class="collapse-item" href="/ordenesAbiertas">Compras abiertas.</a>
                         <a class="collapse-item" href="/crearOrden">Nueva orden de compra.</a>
-                        <a class="collapse-item" href="/entrada">Registrar entrada.</a>
-                        <a class="collapse-item" href="/administrarProveedores">Administrar proveedores.</a>
                     </div>
                 </div>
             </li>
@@ -270,12 +268,18 @@
                     {% endwith %}
                     <!-- Content Row -->
                     <div class="row">
-                        <div class=" col-4 input-group mb-3">
+                        <div class=" col-3 input-group mb-3">
                             <input type="text" class="form-control" placeholder="Buscar Item" aria-label="Recipient's username" aria-describedby="button-addon2">
                             <button class="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
                         </div>
-                        <div class="col-4">
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Añadir Item</button>
+                        <div class="col-3">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Nuevo item</button>
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nuevaCategoria">Nueva Categoria</button>
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nuevoProveedor">Nuevo Proveedor</button>
                         </div>
                     </div>
                     <div class="row">
@@ -411,7 +415,96 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <input type="submit" class="btn btn-success" value="Crear Item">
+                                <input type="submit" class="btn btn-success" value="Crear Item.">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- NUEVA CATEGORIA -->
+            <div class="modal fade" id="nuevaCategoria" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Nueva Categoria</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form class="form" action="/newCategory" method="POST">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        Nombre de la categoria: <input type="text" name="categoria" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <input type="submit" class="btn btn-success" value="Crear Categoria.">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- NUEVO PROVEEDOR -->
+            <div class="modal fade" id="nuevoProveedor" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Nuevo Proveedor</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form class="form" action="/nuevoProveedor" method="POST">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        Nombre del proveedor: <input type="text" name="nomProveedor" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        Contacto 1: <input type="text" name="nomContacto1" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        Tel Contacto 1: <input type="text" name="telContacto1" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        Email Contacto 1: <input type="email" name="emContacto1" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        Contacto 2: <input type="text" name="nomContacto2" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        Tel Contacto 2: <input type="text" name="telContacto2" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        Email Contacto 2: <input type="email" name="emContacto2" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        Telefono de Ventas: <input type="text" name="telVentas" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        Email de Ventas: <input type="email" name="emVentas" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        Direccion fiscal: <input type="text" name="dir" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <input type="submit" class="btn btn-success" value="Crear proveedor.">
                             </div>
                         </form>
                     </div>

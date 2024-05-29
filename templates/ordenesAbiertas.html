@@ -54,8 +54,6 @@
                         <h6 class="collapse-header">Opciones:</h6>
                         <a class="collapse-item" href="/ordenesAbiertas">Compras abiertas.</a>
                         <a class="collapse-item" href="/crearOrden">Nueva orden de compra.</a>
-                        <a class="collapse-item" href="/entrada">Registrar entrada.</a>
-                        <a class="collapse-item" href="/administrarProveedores">Administrar proveedores.</a>
                     </div>
                 </div>
             </li>
@@ -267,9 +265,9 @@
                                 <p class="mb-1">Fecha de la orden: {{registro[1]}}</p>
                                 <p class="mb-1">Proveedor: {{registro[6]}}</p>
                                 <p class="mb-1">Usuario: {{registro[5]}}</p>
-                                <p class="mb-1">Subtotal: {{registro[2]}}</p>
-                                <p class="mb-1">IVA: {{registro[3]}}</p>
-                                <p class="mb-1">Total: {{registro[4]}}</p>
+                                <p class="mb-1">Subtotal: ${{registro[2]}}</p>
+                                <p class="mb-1">IVA: ${{registro[3]}}</p>
+                                <p class="mb-1">Total: ${{registro[4]}}</p>
                                 {% if registro[7] %}
                                     <small style="color:green;">Orden abierta.</small>
                                 {% else %}

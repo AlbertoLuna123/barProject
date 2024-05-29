@@ -86,10 +86,19 @@ def developer():
 # RUTAS DE COMPRAS
 #-----------------------------------------------------------------------------------------------------------------------
 
+#GENERAR ENTRADA
+@app.route('/entrada/<int:id>')
+def entrada(id):
+    query = f"SELECT *, a.cantidad_desc_compra * a.valor_unit_desc_compra Total FROM desc_compra a INNER JOIN item b ON a.id_ttem = b.id_item INNER JOIN unidad_item c ON b.id_unidad_item = c.id_unidad_item WHERE a.id_compra = {id} AND a.entregado_desc_compra = 0"
+    query1 = f"SELECT *, a.cantidad_desc_compra * a.valor_unit_desc_compra Total FROM desc_compra a INNER JOIN item b ON a.id_ttem = b.id_item INNER JOIN unidad_item c ON b.id_unidad_item = c.id_unidad_item WHERE a.id_compra = {id} AND a.entregado_desc_compra = 1"
+    data0 = db.select(query)
+    data1 = db.select(query1)
+    return render_template("generarEntrada.html",noEntregados = data0, entregados = data1)
+
 # ORDENES DE COMPRA ABIERTAS
 @app.route('/ordenesAbiertas')
 def ordenesAbiertas():
-    sql = "SELECT a.id_compra Numero, a.fecha_compra Fecha, a.subtotal_compra Subtotal, a.iva_compra IVA, a.total_compra Total, b.name_user Usuario, c.name_proveedor Proveedor, a.status_compra FROM compra a INNER JOIN user b INNER JOIN proveedor c ON a.id_usuario = b.id_user and a.id_proveedor = c.id_proveedor"
+    sql = "SELECT a.id_compra Numero, a.fecha_compra Fecha, a.subtotal_compra Subtotal, a.iva_compra IVA, a.total_compra Total, b.name_user Usuario, c.name_proveedor Proveedor, a.status_compra FROM compra a INNER JOIN user b INNER JOIN proveedor c ON a.id_usuario = b.id_user and a.id_proveedor = c.id_proveedor WHERE a.status_compra = 1"
     execute = db.select(sql)
     return render_template('ordenesAbiertas.html', data = execute)
 
@@ -103,7 +112,7 @@ def crearOrden():
 def ordenNueva():
     __idProveedor = request.form['id']
     fecha = datetime.today().strftime('%Y-%m-%d')  # Formatea la fecha como 'YYYY-MM-DD'
-    SQLCreaCompra = f"INSERT INTO `compra`(`id_usuario`, `fecha_compra`, `id_proveedor`,`status_compra`) VALUES ({session['id']}, '{fecha}', {__idProveedor}, 1)"
+    SQLCreaCompra = f"INSERT INTO `compra`(`id_usuario`, `fecha_compra`, `id_proveedor`,`status_compra`) VALUES ({session['id']}, '{fecha}', {__idProveedor}, 0)"
     db.executeSQL(SQLCreaCompra)
     return redirect(url_for("itemOrder",id_proveedor = __idProveedor))
 
@@ -129,9 +138,11 @@ def anadirItems():
     for i in range(len(__ids)):
         query = f"INSERT INTO `desc_compra`(`id_compra`, `id_ttem`, `cantidad_desc_compra`, `valor_unit_desc_compra`) VALUES ('{__id_compra}','{__ids[i]}','{__cantidades[i]}','{__preciosUnit[i]}')"
         db.executeSQL(query)
+        query = f"UPDATE `compra` SET `status_compra`= 1 WHERE id_compra = {__id_compra}"
+        db.executeSQL(query)
     
-    subtotalList = [int(item) for item in __preciosUnit]
-    cantList = [int(item) for item in __cantidades]
+    subtotalList = [float(item) for item in __preciosUnit]
+    cantList = [float(item) for item in __cantidades]
     subtotalIndiv = [a * b for a, b in zip(subtotalList, cantList)]
     subtotal = sum(subtotalIndiv)
     iva = subtotal * 0.16
@@ -140,8 +151,6 @@ def anadirItems():
     db.executeSQL(update)
     
     return redirect(url_for("ordenesAbiertas"))
-    
-    #insertar item en desc_compra
 
 #VIZUALIZAR ORDEN DE COMPRA COMPLETA
 @app.route('/detalleCompra/<int:id>')
@@ -154,6 +163,15 @@ def compra(id):
     dataCompra = db.select(sqlCompra)
     dataDetalleCompra = db.select(sqlCompraDetalle)
     return render_template('detalleCompra.html', dataCompra = dataCompra, dataDetalleCompra = dataDetalleCompra, dataBar = dataBar)
+
+@app.route('/entrada/inventarioUpdate/<int:id>/<int:cant>/<int:idC>')
+def inventarioUpdate(id,cant,idC):
+    sql = f"UPDATE item SET existencia_item = existencia_item + {cant} WHERE id_item = {id}"
+    db.executeSQL(sql)
+    entregado = True
+    query = f"UPDATE desc_compra SET entregado_desc_compra = {entregado} WHERE id_compra = {idC} AND id_ttem = {id}"
+    db.executeSQL(query)
+    return redirect(url_for('gestionInventario'))
 #-----------------------------------------------------------------------------------------------------------------------
 # MODULOS ESPECIFICOS
 #-----------------------------------------------------------------------------------------------------------------------
@@ -203,13 +221,43 @@ def newItem():
         
     return redirect(url_for("gestionInventario"))
 
+#Nueva Categoria
+@app.route('/newCategory',methods =['POST','GET'])
+def newCategory():
+    __categoria = request.form['categoria']
+    
+    query = f"INSERT INTO categoria_item (`nombre_categoria_item`) VALUES ('{__categoria}')"
+    db.executeSQL(query)
+    return redirect(url_for('gestionInventario'))
+
+#Nuevo proveedor
+@app.route('/nuevoProveedor',methods =['POST','GET'])
+def nuevoProveedor():
+    __nombreProveedor = request.form['nomProveedor']
+    __nomContacto1 = request.form['nomContacto1']
+    __telContacto1 = request.form['telContacto1']
+    __emContacto1 = request.form['emContacto1']
+    __nomContacto2 = request.form['nomContacto2']
+    __telContacto2 = request.form['telContacto2']
+    __emContacto2 = request.form['emContacto2']
+    __telVentas = request.form['telVentas']
+    __emVentas = request.form['emVentas']
+    __dir = request.form['dir']
+    
+    sql = f"""INSERT INTO `proveedor`(`name_proveedor`, `name_contacto1_proveedor`, `tel_contacto1_proveedor`, `email_contacto1_proveedor`, `name_contacto2_proveedor`, `tel_contacto2_proveedor`, `email_contacto2_proveedor`, `tel_ventas_proveedor`, `email_ventas_proveedor`, `direccion_proveedor`) 
+    VALUES ('{__nombreProveedor}','{__nomContacto1}','{__telContacto1}','{__emContacto1}','{__nomContacto2}','{__telContacto2}','{__emContacto2}','{__telVentas}','{__emVentas}','{__dir}')"""
+    
+    db.executeSQL(sql)
+    
+    
+    return redirect(url_for('gestionInventario'))
+
 #lanza el panel del personal para ver la tabla de ususarios y crear nuevos
 @app.route("/personal")
 def personal():
     cursor = db.database.cursor()
     sql= f"SELECT * FROM user a INNER JOIN userType b ON a.id_userType = b.id_userType"
-    cursor.execute(sql)
-    user = cursor.fetchall()
+    user = db.select(sql)
     user_sorted = sorted(user, key=lambda x: x[0], reverse=True)
     return render_template("personal.html",user = user_sorted)
 
